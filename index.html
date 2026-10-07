@@ -7,18 +7,23 @@
 
     <title>My Dashboard</title>
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- HEADER -->
-
+    <!-- NAVIGATION -->
     <header>
 
-        <div class="logo">
-            <h2>My Dashboard</h2>
-        </div>
+        <a href="index.html" class="logo">
+            <span class="logo-leaf">❀</span>
+            <span>My Dashboard</span>
+        </a>
 
         <nav>
             <a class="active" href="index.html">Dashboard</a>
@@ -29,15 +34,14 @@
     </header>
 
 
-    <!-- MAIN CONTENT -->
-
     <main>
 
         <!-- WELCOME -->
-
         <section class="welcome">
 
-            <h1>Welcome back!</h1>
+            <p class="welcome-small">MY PERSONAL SPACE</p>
+
+            <h1>Welcome back <span>♡</span></h1>
 
             <p id="current-date"></p>
 
@@ -45,35 +49,44 @@
 
 
         <!-- DASHBOARD -->
-
         <div class="dashboard-grid">
 
 
             <!-- CALENDAR -->
-
             <section class="card calendar-card">
 
-                <div class="card-header">
-                    <h2>Calendar</h2>
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">PLANNER</p>
+                        <h2>Calendar</h2>
+                    </div>
+
+                    <span class="decoration">❀</span>
+
                 </div>
 
 
                 <div class="calendar-header">
 
-                    <button id="previous-month">
-                        &lt;
+                    <button
+                        id="previous-month"
+                        class="month-button"
+                        aria-label="Previous month">
+                        ‹
                     </button>
 
                     <h3 id="month-year"></h3>
 
-                    <button id="next-month">
-                        &gt;
+                    <button
+                        id="next-month"
+                        class="month-button"
+                        aria-label="Next month">
+                        ›
                     </button>
 
                 </div>
 
-
-                <!-- DAYS OF WEEK -->
 
                 <div class="calendar-weekdays">
 
@@ -88,8 +101,6 @@
                 </div>
 
 
-                <!-- JAVASCRIPT CREATES CALENDAR HERE -->
-
                 <div
                     id="calendar-days"
                     class="calendar-days">
@@ -98,50 +109,58 @@
             </section>
 
 
-            <!-- TO DO LIST -->
-
+            <!-- TO DO -->
             <section class="card todo-card">
 
-                <div class="card-header">
+                <div class="section-heading">
 
-                    <h2>To-Do List</h2>
+                    <div>
+                        <p class="section-label">TODAY</p>
+                        <h2>To-Do List</h2>
+                    </div>
 
-                    <p id="task-count">
-                        0 tasks remaining
-                    </p>
+                    <span class="decoration">♡</span>
 
                 </div>
 
 
-                <!-- ADD TASK -->
+                <div class="task-summary">
+
+                    <span id="task-count">
+                        0 tasks remaining
+                    </span>
+
+                </div>
+
 
                 <div class="todo-input">
 
                     <input
                         type="text"
                         id="todo-input"
-                        placeholder="Add a new task..."
+                        placeholder="What needs done?"
                         maxlength="100"
                     >
 
                     <button id="add-task">
-                        Add
+                        +
                     </button>
 
                 </div>
 
 
-                <!-- TASKS -->
-
-                <ul id="todo-list">
-                </ul>
+                <ul id="todo-list"></ul>
 
 
-                <!-- EMPTY MESSAGE -->
+                <div id="empty-tasks" class="empty-state">
 
-                <p id="empty-tasks">
-                    Nothing to do yet!
-                </p>
+                    <span>❀</span>
+
+                    <p>Nothing to do yet.</p>
+
+                    <small>Enjoy the quiet!</small>
+
+                </div>
 
             </section>
 
@@ -150,35 +169,49 @@
     </main>
 
 
-    <!-- EVENT POPUP -->
-
-    <div
-        id="event-modal"
-        class="modal">
+    <!-- ADD EVENT MODAL -->
+    <div id="event-modal" class="modal">
 
         <div class="modal-content">
 
             <button
                 id="close-modal"
-                class="close-modal">
+                class="close-modal"
+                aria-label="Close">
                 ×
             </button>
 
-            <h2>Add Event</h2>
+
+            <div class="modal-flower">
+                ❀
+            </div>
+
+
+            <p class="section-label">
+                CALENDAR
+            </p>
+
+            <h2>Add an Event</h2>
 
             <p id="selected-date"></p>
+
+
+            <label for="event-name">
+                What are you doing?
+            </label>
 
             <input
                 type="text"
                 id="event-name"
-                placeholder="What are you doing?"
+                placeholder="e.g. Lunch with friends"
                 maxlength="100"
             >
+
 
             <button
                 id="save-event"
                 class="save-event">
-                Add Event
+                Add to Calendar
             </button>
 
         </div>
