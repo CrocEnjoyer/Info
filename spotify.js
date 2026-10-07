@@ -501,7 +501,10 @@ async function spotifyGetCurrentTrack() {
         await spotifyAPI(
             "/me/player/currently-playing"
         );
-
+console.log(
+    "Currently Playing Status:",
+    response.status
+);
 
     if (
         response.status === 204 ||
