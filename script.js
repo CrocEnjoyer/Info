@@ -17,6 +17,7 @@ function createCalendar() {
     const monthName = currentDate.toLocaleString("default", {
         month: "long"
     });
+    
 
     monthYear.textContent = `${monthName} ${year}`;
 
