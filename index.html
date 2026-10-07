@@ -12,7 +12,10 @@
 
 <body>
 
+    <!-- HEADER -->
+
     <header>
+
         <div class="logo">
             <h2>My Dashboard</h2>
         </div>
@@ -22,33 +25,58 @@
             <a href="#">Movies</a>
             <a href="#">Payments</a>
         </nav>
+
     </header>
+
+
+    <!-- MAIN CONTENT -->
 
     <main>
 
+        <!-- WELCOME -->
+
         <section class="welcome">
+
             <h1>Welcome back!</h1>
-            <p id="current-date">Wednesday, 7 October 2026</p>
+
+            <p id="current-date"></p>
+
         </section>
+
+
+        <!-- DASHBOARD -->
 
         <div class="dashboard-grid">
 
+
             <!-- CALENDAR -->
+
             <section class="card calendar-card">
 
                 <div class="card-header">
                     <h2>Calendar</h2>
                 </div>
 
+
                 <div class="calendar-header">
-                    <button id="previous-month">&lt;</button>
 
-                    <h3 id="month-year">October 2026</h3>
+                    <button id="previous-month">
+                        &lt;
+                    </button>
 
-                    <button id="next-month">&gt;</button>
+                    <h3 id="month-year"></h3>
+
+                    <button id="next-month">
+                        &gt;
+                    </button>
+
                 </div>
 
+
+                <!-- DAYS OF WEEK -->
+
                 <div class="calendar-weekdays">
+
                     <span>Mon</span>
                     <span>Tue</span>
                     <span>Wed</span>
@@ -56,41 +84,107 @@
                     <span>Fri</span>
                     <span>Sat</span>
                     <span>Sun</span>
+
                 </div>
 
-                <div id="calendar-days" class="calendar-days">
-                    <!-- JavaScript will create the days -->
+
+                <!-- JAVASCRIPT CREATES CALENDAR HERE -->
+
+                <div
+                    id="calendar-days"
+                    class="calendar-days">
                 </div>
 
             </section>
 
 
-            <!-- TO-DO LIST -->
+            <!-- TO DO LIST -->
+
             <section class="card todo-card">
 
                 <div class="card-header">
+
                     <h2>To-Do List</h2>
+
+                    <p id="task-count">
+                        0 tasks remaining
+                    </p>
+
                 </div>
 
+
+                <!-- ADD TASK -->
+
                 <div class="todo-input">
+
                     <input
                         type="text"
                         id="todo-input"
                         placeholder="Add a new task..."
+                        maxlength="100"
                     >
 
-                    <button id="add-task">Add</button>
+                    <button id="add-task">
+                        Add
+                    </button>
+
                 </div>
 
+
+                <!-- TASKS -->
+
                 <ul id="todo-list">
-                    <!-- Tasks will appear here -->
                 </ul>
+
+
+                <!-- EMPTY MESSAGE -->
+
+                <p id="empty-tasks">
+                    Nothing to do yet!
+                </p>
 
             </section>
 
         </div>
 
     </main>
+
+
+    <!-- EVENT POPUP -->
+
+    <div
+        id="event-modal"
+        class="modal">
+
+        <div class="modal-content">
+
+            <button
+                id="close-modal"
+                class="close-modal">
+                ×
+            </button>
+
+            <h2>Add Event</h2>
+
+            <p id="selected-date"></p>
+
+            <input
+                type="text"
+                id="event-name"
+                placeholder="What are you doing?"
+                maxlength="100"
+            >
+
+            <button
+                id="save-event"
+                class="save-event">
+                Add Event
+            </button>
+
+        </div>
+
+    </div>
+
 
     <script src="script.js"></script>
 
