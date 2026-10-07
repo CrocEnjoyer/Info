@@ -949,3 +949,285 @@ function updateTaskCount() {
 createCalendar();
 
 displayTasks();
+
+// ========================================
+// DASHBOARD OVERVIEW
+// ========================================
+
+function updateDashboardOverview() {
+
+    updateOverviewTasks();
+
+    updateOverviewPayments();
+
+    updateOverviewEvent();
+
+    updateOverviewSpotify();
+
+}
+
+
+// ========================================
+// TASK OVERVIEW
+// ========================================
+
+function updateOverviewTasks() {
+
+    const remaining =
+        tasks.filter(
+            function(task) {
+
+                return !task.completed;
+
+            }
+        ).length;
+
+
+    const display =
+        document.getElementById(
+            "overview-task-count"
+        );
+
+
+    if (remaining === 1) {
+
+        display.textContent =
+            "1 remaining";
+
+    } else {
+
+        display.textContent =
+            `${remaining} remaining`;
+
+    }
+
+}
+
+
+// ========================================
+// PAYMENT OVERVIEW
+// ========================================
+
+function updateOverviewPayments() {
+
+    const savedPayments =
+        JSON.parse(
+            localStorage.getItem(
+                "monthlyPayments"
+            )
+        ) || [];
+
+
+    const monthly =
+        savedPayments.reduce(
+            function(total, payment) {
+
+                return total +
+                    Number(payment.amount);
+
+            },
+            0
+        );
+
+
+    const yearly =
+        monthly * 12;
+
+
+    const formatter =
+        new Intl.NumberFormat(
+            "en-GB",
+            {
+                style: "currency",
+                currency: "GBP"
+            }
+        );
+
+
+    document.getElementById(
+        "overview-monthly"
+    ).textContent =
+        `${formatter.format(monthly)} / month`;
+
+
+    document.getElementById(
+        "overview-yearly"
+    ).textContent =
+        `${formatter.format(yearly)} / year`;
+
+}
+
+
+// ========================================
+// NEXT CALENDAR EVENT
+// ========================================
+
+function updateOverviewEvent() {
+
+    const eventName =
+        document.getElementById(
+            "overview-event-name"
+        );
+
+
+    const eventDate =
+        document.getElementById(
+            "overview-event-date"
+        );
+
+
+    const todayStart =
+        new Date();
+
+
+    todayStart.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    let upcomingEvents = [];
+
+
+    Object.keys(events).forEach(
+        function(dateKey) {
+
+            const dateParts =
+                dateKey.split("-");
+
+
+            const eventDay =
+                new Date(
+                    Number(dateParts[0]),
+                    Number(dateParts[1]) - 1,
+                    Number(dateParts[2])
+                );
+
+
+            if (eventDay >= todayStart) {
+
+                events[dateKey].forEach(
+                    function(name) {
+
+                        upcomingEvents.push({
+
+                            name: name,
+
+                            date: eventDay
+
+                        });
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    upcomingEvents.sort(
+        function(a, b) {
+
+            return a.date - b.date;
+
+        }
+    );
+
+
+    if (upcomingEvents.length === 0) {
+
+        eventName.textContent =
+            "Nothing planned";
+
+
+        eventDate.textContent =
+            "Your calendar is clear";
+
+
+        return;
+
+    }
+
+
+    const nextEvent =
+        upcomingEvents[0];
+
+
+    eventName.textContent =
+        nextEvent.name;
+
+
+    eventDate.textContent =
+        nextEvent.date.toLocaleDateString(
+            "en-GB",
+            {
+                weekday: "short",
+                day: "numeric",
+                month: "long"
+            }
+        );
+
+}
+
+
+// ========================================
+// SPOTIFY OVERVIEW
+// ========================================
+
+function updateOverviewSpotify() {
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "spotifyListeningHistory"
+            )
+        ) || {};
+
+
+    const plays =
+        Object.values(history);
+
+
+    if (plays.length === 0) {
+
+        return;
+
+    }
+
+
+    plays.sort(
+        function(a, b) {
+
+            return new Date(b.playedAt) -
+                   new Date(a.playedAt);
+
+        }
+    );
+
+
+    const latest =
+        plays[0];
+
+
+    document.getElementById(
+        "overview-track-name"
+    ).textContent =
+        latest.track;
+
+
+    document.getElementById(
+        "overview-track-artist"
+    ).textContent =
+        latest.artist;
+
+}
+
+
+// ========================================
+// REFRESH OVERVIEW
+// ========================================
+
+updateDashboardOverview();
