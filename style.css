@@ -1,614 +1,771 @@
-/* ================================
-   GENERAL
-================================ */
+// ========================================
+// ELEMENTS
+// ========================================
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+const calendarDays = document.getElementById("calendar-days");
+const monthYear = document.getElementById("month-year");
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    color: #222;
-}
+const previousButton = document.getElementById("previous-month");
+const nextButton = document.getElementById("next-month");
+
+const dateDisplay = document.getElementById("current-date");
 
 
-/* ================================
-   HEADER
-================================ */
+// Event modal
 
-header {
-    background-color: white;
+const eventModal = document.getElementById("event-modal");
+const closeModalButton = document.getElementById("close-modal");
 
-    padding: 20px 6%;
+const selectedDateDisplay = document.getElementById("selected-date");
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+const eventNameInput = document.getElementById("event-name");
 
-    border-bottom: 1px solid #ddd;
-}
-
-.logo h2 {
-    font-size: 22px;
-}
-
-nav {
-    display: flex;
-    gap: 30px;
-}
-
-nav a {
-    text-decoration: none;
-
-    color: #777;
-
-    font-weight: bold;
-
-    transition: color 0.2s;
-}
-
-nav a:hover,
-nav a.active {
-    color: #222;
-}
+const saveEventButton = document.getElementById("save-event");
 
 
-/* ================================
-   MAIN
-================================ */
+// To-do
 
-main {
-    width: 88%;
+const todoInput = document.getElementById("todo-input");
 
-    max-width: 1300px;
+const addTaskButton = document.getElementById("add-task");
 
-    margin: 40px auto;
-}
+const todoList = document.getElementById("todo-list");
 
+const emptyTasks = document.getElementById("empty-tasks");
 
-/* ================================
-   WELCOME
-================================ */
-
-.welcome {
-    margin-bottom: 30px;
-}
-
-.welcome h1 {
-    font-size: 30px;
-
-    margin-bottom: 8px;
-}
-
-.welcome p {
-    color: #777;
-}
+const taskCount = document.getElementById("task-count");
 
 
-/* ================================
-   DASHBOARD
-================================ */
+// ========================================
+// CURRENT DATE
+// ========================================
 
-.dashboard-grid {
-    display: grid;
+const today = new Date();
 
-    grid-template-columns: 2fr 1fr;
+let currentDate = new Date();
 
-    gap: 25px;
+let selectedDate = null;
+
+
+// ========================================
+// LOAD SAVED DATA
+// ========================================
+
+let events = JSON.parse(
+    localStorage.getItem("calendarEvents")
+) || {};
+
+
+let tasks = JSON.parse(
+    localStorage.getItem("todoTasks")
+) || [];
+
+
+// ========================================
+// DISPLAY TODAY'S DATE
+// ========================================
+
+dateDisplay.textContent = today.toLocaleDateString(
+    "en-GB",
+    {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    }
+);
+
+
+// ========================================
+// CREATE DATE KEY
+// ========================================
+
+function createDateKey(year, month, day) {
+
+    const monthNumber = String(month + 1).padStart(2, "0");
+
+    const dayNumber = String(day).padStart(2, "0");
+
+    return `${year}-${monthNumber}-${dayNumber}`;
 }
 
 
-/* ================================
-   CARDS
-================================ */
+// ========================================
+// CREATE CALENDAR
+// ========================================
 
-.card {
-    background-color: white;
+function createCalendar() {
 
-    border-radius: 12px;
+    calendarDays.innerHTML = "";
 
-    padding: 25px;
+    const year = currentDate.getFullYear();
 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
+    const month = currentDate.getMonth();
 
-.card-header {
-    margin-bottom: 25px;
-}
 
-.card-header h2 {
-    margin-bottom: 5px;
-}
+    // Month title
 
+    const monthName = currentDate.toLocaleString(
+        "en-GB",
+        {
+            month: "long"
+        }
+    );
 
-/* ================================
-   CALENDAR HEADER
-================================ */
+    monthYear.textContent = `${monthName} ${year}`;
 
-.calendar-header {
-    display: flex;
 
-    justify-content: space-between;
-    align-items: center;
+    // Find first and last day
 
-    margin-bottom: 25px;
-}
+    const firstDay = new Date(year, month, 1);
 
-.calendar-header button {
-    border: none;
+    const lastDay = new Date(year, month + 1, 0);
 
-    background-color: #f0f0f0;
 
-    width: 38px;
-    height: 38px;
+    // Monday = first day of week
 
-    border-radius: 8px;
+    let startingDay = firstDay.getDay() - 1;
 
-    cursor: pointer;
-
-    font-size: 18px;
-}
-
-.calendar-header button:hover {
-    background-color: #ddd;
-}
-
-
-/* ================================
-   WEEKDAYS
-================================ */
-
-.calendar-weekdays {
-    display: grid;
-
-    grid-template-columns: repeat(7, 1fr);
-
-    text-align: center;
-
-    font-weight: bold;
-
-    color: #777;
-
-    margin-bottom: 10px;
-}
-
-
-/* ================================
-   CALENDAR
-================================ */
-
-.calendar-days {
-    display: grid;
-
-    grid-template-columns: repeat(7, 1fr);
-}
-
-
-/* INDIVIDUAL DAY */
-
-.calendar-day {
-    min-height: 100px;
-
-    padding: 10px;
-
-    border: 1px solid #eee;
-
-    cursor: pointer;
-
-    transition: background-color 0.2s;
-
-    overflow: hidden;
-}
-
-.calendar-day:hover {
-    background-color: #f7f7f7;
-}
-
-
-/* DAY NUMBER */
-
-.day-number {
-    display: inline-flex;
-
-    justify-content: center;
-    align-items: center;
-
-    width: 28px;
-    height: 28px;
-
-    font-weight: bold;
-
-    border-radius: 50%;
-}
-
-
-/* TODAY */
-
-.today .day-number {
-    background-color: #222;
-
-    color: white;
-}
-
-
-/* ================================
-   CALENDAR EVENTS
-================================ */
-
-.calendar-event {
-    background-color: #eeeeee;
-
-    padding: 6px 8px;
-
-    border-radius: 5px;
-
-    font-size: 12px;
-
-    margin-top: 6px;
-
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 5px;
-
-    overflow: hidden;
-}
-
-.event-text {
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-}
-
-
-/* EVENT DELETE BUTTON */
-
-.delete-event {
-    border: none;
-
-    background: none;
-
-    color: #888;
-
-    cursor: pointer;
-
-    font-size: 15px;
-}
-
-.delete-event:hover {
-    color: #222;
-}
-
-
-/* ================================
-   TO DO
-================================ */
-
-#task-count {
-    color: #888;
-
-    font-size: 13px;
-}
-
-
-/* INPUT */
-
-.todo-input {
-    display: flex;
-
-    gap: 10px;
-}
-
-.todo-input input {
-    flex: 1;
-
-    min-width: 0;
-
-    padding: 12px;
-
-    border: 1px solid #ddd;
-
-    border-radius: 8px;
-
-    outline: none;
-}
-
-.todo-input input:focus {
-    border-color: #888;
-}
-
-.todo-input button {
-    border: none;
-
-    padding: 0 18px;
-
-    border-radius: 8px;
-
-    background-color: #222;
-
-    color: white;
-
-    cursor: pointer;
-}
-
-.todo-input button:hover {
-    background-color: #444;
-}
-
-
-/* ================================
-   TASK LIST
-================================ */
-
-#todo-list {
-    list-style: none;
-
-    margin-top: 20px;
-}
-
-.todo-item {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    padding: 12px 5px;
-
-    border-bottom: 1px solid #eee;
-}
-
-
-/* CHECKBOX */
-
-.todo-item input {
-    cursor: pointer;
-}
-
-
-/* TASK TEXT */
-
-.task-text {
-    flex: 1;
-
-    word-break: break-word;
-}
-
-
-/* COMPLETED TASK */
-
-.todo-item.completed .task-text {
-    text-decoration: line-through;
-
-    color: #aaa;
-}
-
-
-/* DELETE TASK */
-
-.delete-task {
-    border: none;
-
-    background: none;
-
-    color: #aaa;
-
-    cursor: pointer;
-
-    font-size: 18px;
-}
-
-.delete-task:hover {
-    color: #222;
-}
-
-
-/* EMPTY LIST */
-
-#empty-tasks {
-    margin-top: 25px;
-
-    color: #aaa;
-
-    text-align: center;
-}
-
-
-/* ================================
-   EVENT MODAL
-================================ */
-
-.modal {
-    display: none;
-
-    position: fixed;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background-color: rgba(0, 0, 0, 0.45);
-
-    justify-content: center;
-    align-items: center;
-
-    padding: 20px;
-
-    z-index: 1000;
-}
-
-
-/* SHOW MODAL */
-
-.modal.show {
-    display: flex;
-}
-
-
-/* MODAL BOX */
-
-.modal-content {
-    background-color: white;
-
-    width: 100%;
-
-    max-width: 400px;
-
-    padding: 30px;
-
-    border-radius: 12px;
-
-    position: relative;
-
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-}
-
-.modal-content h2 {
-    margin-bottom: 8px;
-}
-
-#selected-date {
-    color: #777;
-
-    margin-bottom: 20px;
-}
-
-
-/* EVENT INPUT */
-
-#event-name {
-    width: 100%;
-
-    padding: 12px;
-
-    border: 1px solid #ddd;
-
-    border-radius: 8px;
-
-    margin-bottom: 15px;
-
-    outline: none;
-}
-
-#event-name:focus {
-    border-color: #888;
-}
-
-
-/* SAVE EVENT */
-
-.save-event {
-    width: 100%;
-
-    padding: 12px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background-color: #222;
-
-    color: white;
-
-    cursor: pointer;
-}
-
-.save-event:hover {
-    background-color: #444;
-}
-
-
-/* CLOSE MODAL */
-
-.close-modal {
-    position: absolute;
-
-    top: 12px;
-    right: 15px;
-
-    border: none;
-
-    background: none;
-
-    font-size: 25px;
-
-    color: #888;
-
-    cursor: pointer;
-}
-
-.close-modal:hover {
-    color: #222;
-}
-
-
-/* ================================
-   MOBILE
-================================ */
-
-@media (max-width: 800px) {
-
-    header {
-        flex-direction: column;
-
-        gap: 15px;
+    if (startingDay === -1) {
+        startingDay = 6;
     }
 
-    nav {
-        gap: 18px;
+
+    // ========================================
+    // EMPTY DAYS
+    // ========================================
+
+    for (let i = 0; i < startingDay; i++) {
+
+        const emptyDay = document.createElement("div");
+
+        calendarDays.appendChild(emptyDay);
     }
 
-    main {
-        width: 94%;
 
-        margin-top: 25px;
+    // ========================================
+    // DAYS
+    // ========================================
+
+    for (
+        let day = 1;
+        day <= lastDay.getDate();
+        day++
+    ) {
+
+        const dayElement = document.createElement("div");
+
+        dayElement.classList.add("calendar-day");
+
+
+        // Day number
+
+        const dayNumber = document.createElement("span");
+
+        dayNumber.classList.add("day-number");
+
+        dayNumber.textContent = day;
+
+        dayElement.appendChild(dayNumber);
+
+
+        // ========================================
+        // HIGHLIGHT TODAY
+        // ========================================
+
+        if (
+            day === today.getDate() &&
+            month === today.getMonth() &&
+            year === today.getFullYear()
+        ) {
+
+            dayElement.classList.add("today");
+        }
+
+
+        // ========================================
+        // DATE KEY
+        // ========================================
+
+        const dateKey = createDateKey(
+            year,
+            month,
+            day
+        );
+
+
+        // ========================================
+        // DISPLAY EVENTS
+        // ========================================
+
+        if (events[dateKey]) {
+
+            events[dateKey].forEach(
+                function (eventName, eventIndex) {
+
+                    const eventElement =
+                        document.createElement("div");
+
+                    eventElement.classList.add(
+                        "calendar-event"
+                    );
+
+
+                    // Event text
+
+                    const eventText =
+                        document.createElement("span");
+
+                    eventText.classList.add(
+                        "event-text"
+                    );
+
+                    eventText.textContent = eventName;
+
+
+                    // Delete button
+
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.classList.add(
+                        "delete-event"
+                    );
+
+                    deleteButton.textContent = "×";
+
+
+                    // Delete event
+
+                    deleteButton.addEventListener(
+                        "click",
+                        function (event) {
+
+                            // Stop calendar opening
+                            event.stopPropagation();
+
+                            deleteCalendarEvent(
+                                dateKey,
+                                eventIndex
+                            );
+                        }
+                    );
+
+
+                    eventElement.appendChild(
+                        eventText
+                    );
+
+                    eventElement.appendChild(
+                        deleteButton
+                    );
+
+                    dayElement.appendChild(
+                        eventElement
+                    );
+                }
+            );
+        }
+
+
+        // ========================================
+        // CLICK DATE
+        // ========================================
+
+        dayElement.addEventListener(
+            "click",
+            function () {
+
+                openEventModal(
+                    year,
+                    month,
+                    day
+                );
+            }
+        );
+
+
+        calendarDays.appendChild(
+            dayElement
+        );
     }
-
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .calendar-day {
-        min-height: 75px;
-
-        padding: 5px;
-    }
-
-    .calendar-event {
-        font-size: 10px;
-
-        padding: 4px;
-    }
-
 }
 
 
-/* EXTRA SMALL SCREENS */
+// ========================================
+// PREVIOUS MONTH
+// ========================================
 
-@media (max-width: 500px) {
+previousButton.addEventListener(
+    "click",
+    function () {
 
-    .card {
-        padding: 15px;
+        currentDate.setMonth(
+            currentDate.getMonth() - 1
+        );
+
+        createCalendar();
     }
+);
 
-    .calendar-weekdays {
-        font-size: 11px;
+
+// ========================================
+// NEXT MONTH
+// ========================================
+
+nextButton.addEventListener(
+    "click",
+    function () {
+
+        currentDate.setMonth(
+            currentDate.getMonth() + 1
+        );
+
+        createCalendar();
     }
+);
 
-    .day-number {
-        width: 23px;
-        height: 23px;
 
-        font-size: 12px;
-    }
+// ========================================
+// OPEN EVENT MODAL
+// ========================================
 
+function openEventModal(
+    year,
+    month,
+    day
+) {
+
+    selectedDate = createDateKey(
+        year,
+        month,
+        day
+    );
+
+
+    const displayDate = new Date(
+        year,
+        month,
+        day
+    );
+
+
+    selectedDateDisplay.textContent =
+        displayDate.toLocaleDateString(
+            "en-GB",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+    eventNameInput.value = "";
+
+
+    eventModal.classList.add("show");
+
+
+    eventNameInput.focus();
 }
+
+
+// ========================================
+// CLOSE EVENT MODAL
+// ========================================
+
+function closeEventModal() {
+
+    eventModal.classList.remove("show");
+
+    eventNameInput.value = "";
+
+    selectedDate = null;
+}
+
+
+closeModalButton.addEventListener(
+    "click",
+    closeEventModal
+);
+
+
+// Click outside popup to close
+
+eventModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (event.target === eventModal) {
+
+            closeEventModal();
+        }
+    }
+);
+
+
+// ========================================
+// SAVE EVENT
+// ========================================
+
+function saveEvent() {
+
+    const eventName =
+        eventNameInput.value.trim();
+
+
+    if (
+        eventName === "" ||
+        selectedDate === null
+    ) {
+
+        return;
+    }
+
+
+    // Create date array if needed
+
+    if (!events[selectedDate]) {
+
+        events[selectedDate] = [];
+    }
+
+
+    // Add event
+
+    events[selectedDate].push(
+        eventName
+    );
+
+
+    // Save
+
+    localStorage.setItem(
+        "calendarEvents",
+        JSON.stringify(events)
+    );
+
+
+    closeEventModal();
+
+    createCalendar();
+}
+
+
+saveEventButton.addEventListener(
+    "click",
+    saveEvent
+);
+
+
+// Press Enter to save event
+
+eventNameInput.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Enter") {
+
+            saveEvent();
+        }
+    }
+);
+
+
+// ========================================
+// DELETE EVENT
+// ========================================
+
+function deleteCalendarEvent(
+    dateKey,
+    eventIndex
+) {
+
+    events[dateKey].splice(
+        eventIndex,
+        1
+    );
+
+
+    // Remove empty date
+
+    if (events[dateKey].length === 0) {
+
+        delete events[dateKey];
+    }
+
+
+    localStorage.setItem(
+        "calendarEvents",
+        JSON.stringify(events)
+    );
+
+
+    createCalendar();
+}
+
+
+// ========================================
+// TO-DO LIST
+// ========================================
+
+function displayTasks() {
+
+    todoList.innerHTML = "";
+
+
+    // Empty message
+
+    if (tasks.length === 0) {
+
+        emptyTasks.style.display = "block";
+
+    } else {
+
+        emptyTasks.style.display = "none";
+    }
+
+
+    // Create each task
+
+    tasks.forEach(
+        function (task, index) {
+
+            const listItem =
+                document.createElement("li");
+
+            listItem.classList.add(
+                "todo-item"
+            );
+
+
+            if (task.completed) {
+
+                listItem.classList.add(
+                    "completed"
+                );
+            }
+
+
+            // Checkbox
+
+            const checkbox =
+                document.createElement("input");
+
+            checkbox.type = "checkbox";
+
+            checkbox.checked =
+                task.completed;
+
+
+            checkbox.addEventListener(
+                "change",
+                function () {
+
+                    toggleTask(index);
+                }
+            );
+
+
+            // Task text
+
+            const taskText =
+                document.createElement("span");
+
+            taskText.classList.add(
+                "task-text"
+            );
+
+            taskText.textContent =
+                task.text;
+
+
+            // Delete button
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.classList.add(
+                "delete-task"
+            );
+
+            deleteButton.textContent = "×";
+
+
+            deleteButton.addEventListener(
+                "click",
+                function () {
+
+                    deleteTask(index);
+                }
+            );
+
+
+            listItem.appendChild(
+                checkbox
+            );
+
+            listItem.appendChild(
+                taskText
+            );
+
+            listItem.appendChild(
+                deleteButton
+            );
+
+
+            todoList.appendChild(
+                listItem
+            );
+        }
+    );
+
+
+    updateTaskCount();
+}
+
+
+// ========================================
+// ADD TASK
+// ========================================
+
+function addTask() {
+
+    const taskText =
+        todoInput.value.trim();
+
+
+    if (taskText === "") {
+
+        return;
+    }
+
+
+    const newTask = {
+
+        text: taskText,
+
+        completed: false
+    };
+
+
+    tasks.push(newTask);
+
+
+    saveTasks();
+
+
+    todoInput.value = "";
+
+
+    displayTasks();
+
+
+    todoInput.focus();
+}
+
+
+addTaskButton.addEventListener(
+    "click",
+    addTask
+);
+
+
+// Enter adds task
+
+todoInput.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Enter") {
+
+            addTask();
+        }
+    }
+);
+
+
+// ========================================
+// COMPLETE TASK
+// ========================================
+
+function toggleTask(index) {
+
+    tasks[index].completed =
+        !tasks[index].completed;
+
+
+    saveTasks();
+
+    displayTasks();
+}
+
+
+// ========================================
+// DELETE TASK
+// ========================================
+
+function deleteTask(index) {
+
+    tasks.splice(
+        index,
+        1
+    );
+
+
+    saveTasks();
+
+    displayTasks();
+}
+
+
+// ========================================
+// SAVE TASKS
+// ========================================
+
+function saveTasks() {
+
+    localStorage.setItem(
+        "todoTasks",
+        JSON.stringify(tasks)
+    );
+}
+
+
+// ========================================
+// TASK COUNT
+// ========================================
+
+function updateTaskCount() {
+
+    const remainingTasks =
+        tasks.filter(
+            function (task) {
+
+                return !task.completed;
+            }
+        ).length;
+
+
+    if (remainingTasks === 1) {
+
+        taskCount.textContent =
+            "1 task remaining";
+
+    } else {
+
+        taskCount.textContent =
+            `${remainingTasks} tasks remaining`;
+    }
+}
+
+
+// ========================================
+// START WEBSITE
+// ========================================
+
+createCalendar();
+
+displayTasks();
