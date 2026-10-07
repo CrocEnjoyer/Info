@@ -491,3 +491,70 @@ async function spotifyGetLatestTrack() {
     };
 
 }
+/* =========================================================
+   CURRENTLY PLAYING
+========================================================= */
+
+async function spotifyGetCurrentTrack() {
+
+    const response =
+        await spotifyAPI(
+            "/me/player/currently-playing"
+        );
+
+
+    if (
+        response.status === 204 ||
+        !response.ok
+    ) {
+
+        return null;
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        !data.item ||
+        !data.is_playing
+    ) {
+
+        return null;
+
+    }
+
+
+    const track =
+        data.item;
+
+
+    return {
+
+        track:
+            track.name,
+
+        artist:
+            track.artists
+                .map(
+                    artist =>
+                        artist.name
+                )
+                .join(", "),
+
+        image:
+            track.album
+                .images?.[0]?.url || "",
+
+        spotifyUrl:
+            track.external_urls
+                .spotify || "",
+
+        isPlaying:
+            true
+
+    };
+
+}
