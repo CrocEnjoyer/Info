@@ -1177,7 +1177,127 @@ function updateOverviewEvent() {
 // SPOTIFY OVERVIEW
 // ========================================
 
-function updateOverviewSpotify() {
+// ========================================
+// LIVE SPOTIFY OVERVIEW
+// ========================================
+
+async function updateOverviewSpotify() {
+
+    const trackName =
+        document.getElementById(
+            "overview-track-name"
+        );
+
+    const artistName =
+        document.getElementById(
+            "overview-track-artist"
+        );
+
+    const albumArt =
+        document.getElementById(
+            "overview-album-art"
+        );
+
+    const placeholder =
+        document.getElementById(
+            "overview-music-placeholder"
+        );
+
+    const spotifyCard =
+        document.getElementById(
+            "overview-spotify-card"
+        );
+
+
+    try {
+
+        const token =
+            await spotifyGetToken();
+
+
+        if (!token) {
+
+            showStoredSpotifyTrack();
+
+            return;
+
+        }
+
+
+        const latest =
+            await spotifyGetLatestTrack();
+
+
+        if (!latest) {
+
+            showStoredSpotifyTrack();
+
+            return;
+
+        }
+
+
+        trackName.textContent =
+            latest.track;
+
+
+        artistName.textContent =
+            latest.artist;
+
+
+        if (latest.image) {
+
+            albumArt.src =
+                latest.image;
+
+            albumArt.style.display =
+                "block";
+
+            placeholder.style.display =
+                "none";
+
+        }
+
+
+        /*
+         Clicking the card opens the actual
+         song when we have its Spotify URL.
+        */
+
+        if (latest.spotifyUrl) {
+
+            spotifyCard.href =
+                latest.spotifyUrl;
+
+            spotifyCard.target =
+                "_blank";
+
+            spotifyCard.rel =
+                "noopener noreferrer";
+
+        }
+
+
+    } catch (error) {
+
+        console.log(
+            "Using stored Spotify information.",
+            error
+        );
+
+
+        showStoredSpotifyTrack();
+
+    }
+
+}
+
+
+// ========================================
+// STORED SPOTIFY FALLBACK
+// ========================================
+
+function showStoredSpotifyTrack() {
 
     const history =
         JSON.parse(
@@ -1201,8 +1321,10 @@ function updateOverviewSpotify() {
     plays.sort(
         function(a, b) {
 
-            return new Date(b.playedAt) -
-                   new Date(a.playedAt);
+            return (
+                new Date(b.playedAt) -
+                new Date(a.playedAt)
+            );
 
         }
     );
@@ -1222,6 +1344,52 @@ function updateOverviewSpotify() {
         "overview-track-artist"
     ).textContent =
         latest.artist;
+
+
+    const albumArt =
+        document.getElementById(
+            "overview-album-art"
+        );
+
+
+    const placeholder =
+        document.getElementById(
+            "overview-music-placeholder"
+        );
+
+
+    if (latest.image) {
+
+        albumArt.src =
+            latest.image;
+
+        albumArt.style.display =
+            "block";
+
+        placeholder.style.display =
+            "none";
+
+    }
+
+
+    if (latest.spotifyUrl) {
+
+        const card =
+            document.getElementById(
+                "overview-spotify-card"
+            );
+
+
+        card.href =
+            latest.spotifyUrl;
+
+        card.target =
+            "_blank";
+
+        card.rel =
+            "noopener noreferrer";
+
+    }
 
 }
 
