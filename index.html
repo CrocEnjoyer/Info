@@ -13,10 +13,12 @@
 <body>
 
     <header>
-        <h1>My Dashboard</h1>
+        <div class="logo">
+            <h2>My Dashboard</h2>
+        </div>
 
         <nav>
-            <a href="index.html">Dashboard</a>
+            <a class="active" href="index.html">Dashboard</a>
             <a href="#">Movies</a>
             <a href="#">Payments</a>
         </nav>
@@ -24,17 +26,69 @@
 
     <main>
 
-        <section class="calendar">
-            <h2>Calendar</h2>
-
-            <!-- We'll build the calendar here -->
+        <section class="welcome">
+            <h1>Welcome back!</h1>
+            <p id="current-date">Wednesday, 7 October 2026</p>
         </section>
 
-        <section class="todo">
-            <h2>To-Do List</h2>
+        <div class="dashboard-grid">
 
-            <!-- We'll build the to-do list here -->
-        </section>
+            <!-- CALENDAR -->
+            <section class="card calendar-card">
+
+                <div class="card-header">
+                    <h2>Calendar</h2>
+                </div>
+
+                <div class="calendar-header">
+                    <button id="previous-month">&lt;</button>
+
+                    <h3 id="month-year">October 2026</h3>
+
+                    <button id="next-month">&gt;</button>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                </div>
+
+                <div id="calendar-days" class="calendar-days">
+                    <!-- JavaScript will create the days -->
+                </div>
+
+            </section>
+
+
+            <!-- TO-DO LIST -->
+            <section class="card todo-card">
+
+                <div class="card-header">
+                    <h2>To-Do List</h2>
+                </div>
+
+                <div class="todo-input">
+                    <input
+                        type="text"
+                        id="todo-input"
+                        placeholder="Add a new task..."
+                    >
+
+                    <button id="add-task">Add</button>
+                </div>
+
+                <ul id="todo-list">
+                    <!-- Tasks will appear here -->
+                </ul>
+
+            </section>
+
+        </div>
 
     </main>
 
