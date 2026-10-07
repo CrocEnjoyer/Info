@@ -1,38 +1,58 @@
+// ===============================
+// CALENDAR
+// ===============================
+
 const calendarDays = document.getElementById("calendar-days");
 const monthYear = document.getElementById("month-year");
 
 const previousButton = document.getElementById("previous-month");
 const nextButton = document.getElementById("next-month");
 
+// Start calendar on today's date
 let currentDate = new Date();
+
+
+// ===============================
+// CREATE CALENDAR
+// ===============================
 
 function createCalendar() {
 
+    // Clear the existing calendar
     calendarDays.innerHTML = "";
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
-    // Display month and year
+    // Get the name of the month
     const monthName = currentDate.toLocaleString("default", {
         month: "long"
     });
-    
 
+    // Display month and year
     monthYear.textContent = `${monthName} ${year}`;
 
-    // First and last day of month
+
+    // ===============================
+    // FIRST AND LAST DAY OF MONTH
+    // ===============================
+
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    // Convert Sunday = 0 format to Monday = 0
+    // JavaScript normally starts the week on Sunday.
+    // This changes it so Monday is first.
     let startingDay = firstDay.getDay() - 1;
 
     if (startingDay === -1) {
         startingDay = 6;
     }
 
-    // Empty spaces before first day
+
+    // ===============================
+    // EMPTY DAYS BEFORE MONTH STARTS
+    // ===============================
+
     for (let i = 0; i < startingDay; i++) {
 
         const emptyDay = document.createElement("div");
@@ -40,32 +60,82 @@ function createCalendar() {
         calendarDays.appendChild(emptyDay);
     }
 
-    // Create days
+
+    // ===============================
+    // CREATE DAYS
+    // ===============================
+
     for (let day = 1; day <= lastDay.getDate(); day++) {
 
         const dayElement = document.createElement("div");
 
-        dayElement.textContent = day;
+        dayElement.classList.add("calendar-day");
+
+
+        // Create day number
+        const dayNumber = document.createElement("span");
+
+        dayNumber.textContent = day;
+
+        dayElement.appendChild(dayNumber);
+
+
+        // ===============================
+        // CLICK DAY TO ADD EVENT
+        // ===============================
+
+        dayElement.addEventListener("click", function () {
+
+            const eventName = prompt(
+                `Add an event for ${day} ${monthName} ${year}:`
+            );
+
+            // Make sure something was entered
+            if (eventName !== null && eventName.trim() !== "") {
+
+                const eventElement = document.createElement("p");
+
+                eventElement.classList.add("calendar-event");
+
+                eventElement.textContent = eventName;
+
+                dayElement.appendChild(eventElement);
+            }
+        });
+
 
         calendarDays.appendChild(dayElement);
     }
 }
 
-previousButton.addEventListener("click", function() {
+
+// ===============================
+// PREVIOUS MONTH BUTTON
+// ===============================
+
+previousButton.addEventListener("click", function () {
 
     currentDate.setMonth(currentDate.getMonth() - 1);
 
     createCalendar();
 });
 
-nextButton.addEventListener("click", function() {
+
+// ===============================
+// NEXT MONTH BUTTON
+// ===============================
+
+nextButton.addEventListener("click", function () {
 
     currentDate.setMonth(currentDate.getMonth() + 1);
 
     createCalendar();
 });
 
-createCalendar();
+
+// ===============================
+// DISPLAY TODAY'S DATE
+// ===============================
 
 const dateDisplay = document.getElementById("current-date");
 
@@ -77,3 +147,10 @@ dateDisplay.textContent = today.toLocaleDateString("en-GB", {
     month: "long",
     year: "numeric"
 });
+
+
+// ===============================
+// LOAD CALENDAR
+// ===============================
+
+createCalendar();
