@@ -1028,27 +1028,30 @@ function trackListeningHistory(items) {
 
 
             if (!history[playID]) {
+history[playID] = {
 
-                history[playID] = {
+    duration:
+        item.track.duration_ms,
 
-                    duration:
-                        item.track.duration_ms,
+    track:
+        item.track.name,
 
-                    track:
-                        item.track.name,
+    artist:
+        item.track.artists
+            .map(
+                artist =>
+                    artist.name
+            )
+            .join(", "),
 
-                    artist:
-                        item.track.artists
-                            .map(
-                                artist =>
-                                    artist.name
-                            )
-                            .join(", "),
+    playedAt:
+        item.played_at,
 
-                    playedAt:
-                        item.played_at
+    image:
+        item.track.album.images?.[0]?.url || ""
 
-                };
+};
+                
             }
 
         }
