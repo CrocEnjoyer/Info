@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payments | My Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =====================================
+         NAVIGATION
+    ====================================== -->
+
+    <header>
+
+        <a href="index.html" class="logo">
+            <span class="logo-leaf">❀</span>
+            <span>My Dashboard</span>
+        </a>
+
+        <nav>
+
+            <a href="index.html">
+                Dashboard
+            </a>
+
+            <a href="#">
+                Movies
+            </a>
+
+            <a class="active" href="payments.html">
+                Payments
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <!-- =====================================
+             PAGE TITLE
+        ====================================== -->
+
+        <section class="welcome">
+
+            <p class="welcome-small">
+                MY FINANCES
+            </p>
+
+            <h1>
+                Monthly Payments <span>♡</span>
+            </h1>
+
+            <p>
+                Keep track of your regular monthly spending.
+            </p>
+
+        </section>
+
+
+        <!-- =====================================
+             PAYMENT SUMMARY
+        ====================================== -->
+
+        <section class="payment-summary-grid">
+
+            <!-- MONTHLY TOTAL -->
+
+            <div class="summary-card main-summary">
+
+                <p class="section-label">
+                    MONTHLY TOTAL
+                </p>
+
+                <h2 id="monthly-total">
+                    £0.00
+                </h2>
+
+                <p>
+                    per month
+                </p>
+
+            </div>
+
+
+            <!-- YEARLY TOTAL -->
+
+            <div class="summary-card">
+
+                <p class="section-label">
+                    YEARLY EQUIVALENT
+                </p>
+
+                <h3 id="yearly-total">
+                    £0.00
+                </h3>
+
+                <p>
+                    per year
+                </p>
+
+            </div>
+
+
+            <!-- ACTIVE PAYMENTS -->
+
+            <div class="summary-card">
+
+                <p class="section-label">
+                    ACTIVE PAYMENTS
+                </p>
+
+                <h3 id="payment-count">
+                    0
+                </h3>
+
+                <p>
+                    subscriptions & payments
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             PAYMENTS
+        ====================================== -->
+
+        <section class="card payments-card">
+
+            <div class="payments-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        REGULAR SPENDING
+                    </p>
+
+                    <h2>
+                        Your Payments
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="open-payment-modal"
+                    class="add-payment-button">
+
+                    <span>+</span>
+                    Add Payment
+
+                </button>
+
+            </div>
+
+
+            <!-- PAYMENT LIST -->
+
+            <div id="payments-list">
+            </div>
+
+
+            <!-- EMPTY STATE -->
+
+            <div
+                id="empty-payments"
+                class="empty-state payment-empty">
+
+                <span>❀</span>
+
+                <p>
+                    No payments added yet.
+                </p>
+
+                <small>
+                    Add your first monthly payment above.
+                </small>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================
+         ADD PAYMENT MODAL
+    ====================================== -->
+
+    <div
+        id="payment-modal"
+        class="modal">
+
+        <div class="modal-content">
+
+            <button
+                id="close-payment-modal"
+                class="close-modal"
+                aria-label="Close">
+                ×
+            </button>
+
+
+            <div class="modal-flower">
+                ❀
+            </div>
+
+
+            <p class="section-label">
+                PAYMENTS
+            </p>
+
+
+            <h2>
+                Add a Payment
+            </h2>
+
+
+            <p class="modal-description">
+                Add one of your regular monthly payments.
+            </p>
+
+
+            <!-- NAME -->
+
+            <label for="payment-name">
+                Payment name
+            </label>
+
+            <input
+                type="text"
+                id="payment-name"
+                class="payment-input"
+                placeholder="e.g. Spotify"
+                maxlength="50"
+            >
+
+
+            <!-- AMOUNT -->
+
+            <label for="payment-amount">
+                Monthly amount
+            </label>
+
+            <div class="money-input">
+
+                <span>£</span>
+
+                <input
+                    type="number"
+                    id="payment-amount"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                >
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <label for="payment-category">
+                Category
+            </label>
+
+            <select
+                id="payment-category"
+                class="payment-select">
+
+                <option value="Entertainment">
+                    Entertainment
+                </option>
+
+                <option value="Music">
+                    Music
+                </option>
+
+                <option value="Gaming">
+                    Gaming
+                </option>
+
+                <option value="Phone">
+                    Phone
+                </option>
+
+                <option value="Software">
+                    Software
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+
+            <button
+                id="save-payment"
+                class="save-event">
+
+                Add Payment
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         PAYMENT JAVASCRIPT
+    ====================================== -->
+
+    <script>
+
+        // ================================
+        // ELEMENTS
+        // ================================
+
+        const paymentsList =
+            document.getElementById("payments-list");
+
+        const emptyPayments =
+            document.getElementById("empty-payments");
+
+        const monthlyTotal =
+            document.getElementById("monthly-total");
+
+        const yearlyTotal =
+            document.getElementById("yearly-total");
+
+        const paymentCount =
+            document.getElementById("payment-count");
+
+
+        // MODAL
+
+        const paymentModal =
+            document.getElementById("payment-modal");
+
+        const openPaymentModalButton =
+            document.getElementById("open-payment-modal");
+
+        const closePaymentModalButton =
+            document.getElementById("close-payment-modal");
+
+        const savePaymentButton =
+            document.getElementById("save-payment");
+
+
+        // INPUTS
+
+        const paymentNameInput =
+            document.getElementById("payment-name");
+
+        const paymentAmountInput =
+            document.getElementById("payment-amount");
+
+        const paymentCategoryInput =
+            document.getElementById("payment-category");
+
+
+        // ================================
+        // LOAD PAYMENTS
+        // ================================
+
+        let payments =
+            JSON.parse(
+                localStorage.getItem("monthlyPayments")
+            ) || [];
+
+
+        // ================================
+        // MONEY FORMAT
+        // ================================
+
+        function formatMoney(amount) {
+
+            return new Intl.NumberFormat(
+                "en-GB",
+                {
+                    style: "currency",
+                    currency: "GBP"
+                }
+            ).format(amount);
+
+        }
+
+
+        // ================================
+        // DISPLAY PAYMENTS
+        // ================================
+
+        function displayPayments() {
+
+            paymentsList.innerHTML = "";
+
+
+            if (payments.length === 0) {
+
+                emptyPayments.style.display =
+                    "block";
+
+            } else {
+
+                emptyPayments.style.display =
+                    "none";
+
+            }
+
+
+            payments.forEach(
+                function(payment, index) {
+
+                    // PAYMENT ROW
+
+                    const paymentItem =
+                        document.createElement("div");
+
+                    paymentItem.classList.add(
+                        "payment-item"
+                    );
+
+
+                    // LEFT SIDE
+
+                    const paymentInfo =
+                        document.createElement("div");
+
+                    paymentInfo.classList.add(
+                        "payment-info"
+                    );
+
+
+                    const icon =
+                        document.createElement("div");
+
+                    icon.classList.add(
+                        "payment-icon"
+                    );
+
+                    icon.textContent = "❀";
+
+
+                    const paymentText =
+                        document.createElement("div");
+
+
+                    const name =
+                        document.createElement("h3");
+
+                    name.textContent =
+                        payment.name;
+
+
+                    const category =
+                        document.createElement("p");
+
+                    category.textContent =
+                        payment.category;
+
+
+                    paymentText.appendChild(name);
+
+                    paymentText.appendChild(category);
+
+
+                    paymentInfo.appendChild(icon);
+
+                    paymentInfo.appendChild(
+                        paymentText
+                    );
+
+
+                    // RIGHT SIDE
+
+                    const paymentRight =
+                        document.createElement("div");
+
+                    paymentRight.classList.add(
+                        "payment-right"
+                    );
+
+
+                    const amount =
+                        document.createElement("strong");
+
+                    amount.textContent =
+                        formatMoney(payment.amount);
+
+
+                    const removeButton =
+                        document.createElement("button");
+
+                    removeButton.classList.add(
+                        "remove-payment"
+                    );
+
+                    removeButton.textContent = "×";
+
+                    removeButton.title =
+                        "Remove payment";
+
+
+                    removeButton.addEventListener(
+                        "click",
+                        function() {
+
+                            removePayment(index);
+
+                        }
+                    );
+
+
+                    paymentRight.appendChild(amount);
+
+                    paymentRight.appendChild(
+                        removeButton
+                    );
+
+
+                    paymentItem.appendChild(
+                        paymentInfo
+                    );
+
+                    paymentItem.appendChild(
+                        paymentRight
+                    );
+
+
+                    paymentsList.appendChild(
+                        paymentItem
+                    );
+
+                }
+            );
+
+
+            updateTotals();
+
+        }
+
+
+        // ================================
+        // TOTALS
+        // ================================
+
+        function updateTotals() {
+
+            const total =
+                payments.reduce(
+                    function(sum, payment) {
+
+                        return sum + payment.amount;
+
+                    },
+                    0
+                );
+
+
+            const yearly =
+                total * 12;
+
+
+            monthlyTotal.textContent =
+                formatMoney(total);
+
+
+            yearlyTotal.textContent =
+                formatMoney(yearly);
+
+
+            paymentCount.textContent =
+                payments.length;
+
+        }
+
+
+        // ================================
+        // OPEN MODAL
+        // ================================
+
+        function openPaymentModal() {
+
+            paymentModal.classList.add(
+                "show"
+            );
+
+
+            paymentNameInput.value = "";
+
+            paymentAmountInput.value = "";
+
+            paymentCategoryInput.value =
+                "Entertainment";
+
+
+            setTimeout(
+                function() {
+
+                    paymentNameInput.focus();
+
+                },
+                100
+            );
+
+        }
+
+
+        openPaymentModalButton.addEventListener(
+            "click",
+            openPaymentModal
+        );
+
+
+        // ================================
+        // CLOSE MODAL
+        // ================================
+
+        function closePaymentModal() {
+
+            paymentModal.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        closePaymentModalButton.addEventListener(
+            "click",
+            closePaymentModal
+        );
+
+
+        paymentModal.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === paymentModal
+                ) {
+
+                    closePaymentModal();
+
+                }
+
+            }
+        );
+
+
+        // ESCAPE CLOSES MODAL
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    closePaymentModal();
+
+                }
+
+            }
+        );
+
+
+        // ================================
+        // ADD PAYMENT
+        // ================================
+
+        function addPayment() {
+
+            const name =
+                paymentNameInput.value.trim();
+
+
+            const amount =
+                parseFloat(
+                    paymentAmountInput.value
+                );
+
+
+            const category =
+                paymentCategoryInput.value;
+
+
+            // VALIDATION
+
+            if (name === "") {
+
+                paymentNameInput.focus();
+
+                return;
+
+            }
+
+
+            if (
+                isNaN(amount) ||
+                amount <= 0
+            ) {
+
+                paymentAmountInput.focus();
+
+                return;
+
+            }
+
+
+            // CREATE PAYMENT
+
+            const newPayment = {
+
+                name: name,
+
+                amount: amount,
+
+                category: category
+
+            };
+
+
+            payments.push(
+                newPayment
+            );
+
+
+            savePayments();
+
+            displayPayments();
+
+            closePaymentModal();
+
+        }
+
+
+        savePaymentButton.addEventListener(
+            "click",
+            addPayment
+        );
+
+
+        // ENTER CAN ADD PAYMENT
+
+        paymentAmountInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    addPayment();
+
+                }
+
+            }
+        );
+
+
+        // ================================
+        // REMOVE PAYMENT
+        // ================================
+
+        function removePayment(index) {
+
+            payments.splice(
+                index,
+                1
+            );
+
+
+            savePayments();
+
+            displayPayments();
+
+        }
+
+
+        // ================================
+        // SAVE
+        // ================================
+
+        function savePayments() {
+
+            localStorage.setItem(
+                "monthlyPayments",
+                JSON.stringify(payments)
+            );
+
+        }
+
+
+        // ================================
+        // START
+        // ================================
+
+        displayPayments();
+
+    </script>
+
+</body>
+
+</html>
