@@ -1399,3 +1399,16 @@ function showStoredSpotifyTrack() {
 // ========================================
 
 updateDashboardOverview();
+
+// ========================================
+// LIVE SPOTIFY REFRESH
+// ========================================
+
+setInterval(
+    function() {
+
+        updateOverviewSpotify();
+
+    },
+    10000
+);
